@@ -4,7 +4,8 @@ const artSchema = new mongoose.Schema({
  title: String, //my first art
  description: String, //my shortd desc
  cost: Number, //$259
- resolution: String, //1920x1080
+ resolutionWidth: Number,
+ resolutionHeight: Number,
  likes: Number, //52
  reviews: [
    {
