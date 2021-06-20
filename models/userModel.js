@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     minLength: 8,
-    select: false //security
+    select: false, //security
   },
   passwordConfirm: {
     type: String,
@@ -30,6 +30,11 @@ const userSchema = new mongoose.Schema({
     ],
   },
 });
+
+//model instance method -> this method will be available for all the documents created by this model
+userSchema.methods.passwordVerification = async (password, hasedPassword) => {
+  return await bcrypt.compare(password, hasedPassword);
+};
 
 userSchema.pre("save", async function (next) {
   //this -> document
