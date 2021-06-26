@@ -6,6 +6,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "user name is required!"],
   },
+  role: {
+    type: String,
+    required: [true, "role is required!"],
+    enum: ["artist", "buyer"]
+  },
   email: {
     type: String,
     unique: true, //indexing
@@ -29,6 +34,7 @@ const userSchema = new mongoose.Schema({
       "passowrd not match ",
     ],
   },
+  passwordChangedAt: Date
 });
 
 //model instance method -> this method will be available for all the documents created by this model
