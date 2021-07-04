@@ -3,9 +3,12 @@
     "bcryptjs": "^2.4.3",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
+    "express-mongo-sanitize": "^2.1.0",
+    "express-rate-limit": "^5.3.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.12.12",
-    "nodemailer": "^6.6.2"
+    "nodemailer": "^6.6.2",
+    "xss-clean": "^0.1.1"
   },
   "scripts": {
     "dev-start": "nodemon server.js"

@@ -13,14 +13,19 @@ const signJWT = (userId) => {
 const createAndSendToken = (user, res) => {
   var token = signJWT(user._id);
   var { password, ...modifiedUser } = user.toObject(); //simple object
+  res.cookie("jwt", token, {
+    expires: new Date(Date.now() + parseInt(process.env.COOKIE_EXPIRES_IN) * 24 * 60 * 60 * 1000),
+    secure: process.env.NODE_ENV === "development" ? false : true,  //this will only valid for HTTPS connection
+    httpOnly: true //transfer only in http/https protocols
+  })
   res.status(200).json({
     status: "success",
-    token,
+    token, //browser local || cookie
     data: {
-      user: modifiedUser
-    }
-  })
-}
+      user: modifiedUser,
+    },
+  });
+};
 exports.fetchUsers = async (req, res) => {
   //admin
   try {
@@ -43,7 +48,7 @@ exports.signup = async (req, res) => {
   try {
     //encryption
     var user = await User.create(req.body); //bson
-    createAndSendToken(user,res)
+    createAndSendToken(user, res);
   } catch (error) {
     res.status(404).json({
       status: "error",
@@ -76,7 +81,7 @@ exports.login = async (req, res) => {
         error: "invalid email or password",
       });
     }
-   createAndSendToken(user,res)
+    createAndSendToken(user, res);
   } catch (error) {
     res.status(404).json({
       status: "error",
@@ -203,7 +208,7 @@ exports.resetPassword = async (req, res) => {
     user.passwordConfirm = passwordConfirm;
     user.passwordResetToken = undefined;
     await user.save();
-    createAndSendToken(user,res)
+    createAndSendToken(user, res);
   } catch (error) {
     user.passwordResetToken = undefined;
     user.passwordResetTokenExpiresAt = undefined;
@@ -213,4 +218,10 @@ exports.resetPassword = async (req, res) => {
       error: error.message,
     });
   }
+};
+
+exports.updatePassword = () => {
+  //currentPassword
+  //password
+  //passwordConfirm
 };
