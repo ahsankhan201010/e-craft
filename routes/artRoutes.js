@@ -4,7 +4,7 @@ const { protect, restrictTo } = require("../controllers/authController");
 
 const router = express.Router();
 
-router.get("/", getArts); //only for artists
+router.get("/", getArts); 
 router.post("/", protect, restrictTo("artist"), addArt);
 
 module.exports = router;

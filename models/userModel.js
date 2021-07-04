@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+const crypto = require("crypto");
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -9,7 +10,7 @@ const userSchema = new mongoose.Schema({
   role: {
     type: String,
     required: [true, "role is required!"],
-    enum: ["artist", "buyer"]
+    enum: ["artist", "buyer"],
   },
   email: {
     type: String,
@@ -34,12 +35,32 @@ const userSchema = new mongoose.Schema({
       "passowrd not match ",
     ],
   },
-  passwordChangedAt: Date
+  passwordChangedAt: Date,
+  passwordResetToken: String,
+  passwordResetTokenExpiresAt: Date,
 });
 
 //model instance method -> this method will be available for all the documents created by this model
 userSchema.methods.passwordVerification = async (password, hasedPassword) => {
   return await bcrypt.compare(password, hasedPassword);
+};
+
+//password reset token generator
+userSchema.methods.passwordResetTokenGenerator = function () {
+  //this -> user document
+  //generate random string of 32 bits
+  var resetToken = crypto.randomBytes(32).toString("hex");
+  //encrypt reset token
+  var encryptedResetToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+  //save encrypted resettoken in user document
+  this.passwordResetToken = encryptedResetToken;
+  //set token expiry (10 min)
+  this.passwordResetTokenExpiresAt = Date.now() + 10 * 60 * 1000;
+  //return non-encrypted reset token
+  return resetToken;
 };
 
 userSchema.pre("save", async function (next) {
