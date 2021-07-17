@@ -18,6 +18,11 @@ const userSchema = new mongoose.Schema({
     required: true, //TODO: check email pattern //validation
     lower: true, // user@gmail.com & User@gmail.com //modification
   },
+  displayPicture: {
+    type: String,
+    default: "default.png",
+
+  },
   password: {
     type: String,
     required: true,

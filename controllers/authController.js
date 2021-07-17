@@ -3,6 +3,8 @@ const JWT = require("jsonwebtoken");
 const crypto = require("crypto");
 const { promisify } = require("util");
 const sendEmail = require("../utility/email");
+const { addArtist, fetchArtist } = require("./artistController");
+const { addBuyer, fetchBuyer } = require("./buyerController");
 
 const signJWT = (userId) => {
   return JWT.sign({ id: userId }, process.env.JWT_WEB_SECRET, {
@@ -11,8 +13,7 @@ const signJWT = (userId) => {
 };
 
 const createAndSendToken = (user, res) => {
-  var token = signJWT(user._id);
-  var { password, ...modifiedUser } = user.toObject(); //simple object
+  var token = signJWT(user.userId);
   res.cookie("jwt", token, {
     expires: new Date(Date.now() + parseInt(process.env.COOKIE_EXPIRES_IN) * 24 * 60 * 60 * 1000),
     secure: process.env.NODE_ENV === "development" ? false : true,  //this will only valid for HTTPS connection
@@ -22,7 +23,7 @@ const createAndSendToken = (user, res) => {
     status: "success",
     token, //browser local || cookie
     data: {
-      user: modifiedUser,
+      user
     },
   });
 };
@@ -48,7 +49,16 @@ exports.signup = async (req, res) => {
   try {
     //encryption
     var user = await User.create(req.body); //bson
-    createAndSendToken(user, res);
+    //profile creation 
+    var profile = {
+      username: user.username,
+      email: user.email,
+      userId: user._id
+    }
+    var userProfile = null;
+    if(user.role === "artist") userProfile = await addArtist(profile)
+    if(user.role === "buyer") userProfile = await addBuyer(profile)
+    createAndSendToken(userProfile, res);
   } catch (error) {
     res.status(404).json({
       status: "error",
@@ -81,7 +91,11 @@ exports.login = async (req, res) => {
         error: "invalid email or password",
       });
     }
-    createAndSendToken(user, res);
+    var userProfile = null;
+    //fetching profile
+    if(user.role === "artist") userProfile = await fetchArtist(user._id)
+    if(user.role === "buyer") userProfile = await fetchBuyer(user._id)
+    createAndSendToken(userProfile, res);
   } catch (error) {
     res.status(404).json({
       status: "error",
