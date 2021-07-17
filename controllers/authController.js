@@ -58,6 +58,7 @@ exports.signup = async (req, res) => {
     var userProfile = null;
     if(user.role === "artist") userProfile = await addArtist(profile)
     if(user.role === "buyer") userProfile = await addBuyer(profile)
+    
     createAndSendToken(userProfile, res);
   } catch (error) {
     res.status(404).json({
