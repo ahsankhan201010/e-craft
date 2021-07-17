@@ -7,7 +7,6 @@ exports.addArt = async (req, res) => {
     req.body.artist = req.user._id;
     console.log(req.body);
     var art = await Art.create(req.body);
-    // console.log(art);
     res.status(200).json({
       status: "success",
       data: {
@@ -47,8 +46,8 @@ exports.getArts = async (req, res) => {
 
 exports.getSpecficArt = async (req, res) => {
   try {
-    var art = await Art.findById(req.params.artId);
-
+    var art = await Art.findById(req.params.artId).populate("reviews");
+  
     res.status(200).json({
       status: "success",
       data: {

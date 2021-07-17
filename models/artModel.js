@@ -23,10 +23,21 @@ const artSchema = new mongoose.Schema(
       default: 0,
     },
   },
-  {
-    timestamps: true,
-  }
+  { toJSON: { virtuals: true }, toObject: { virtuals: true }, timestamps: true }
 );
+
+//virtual properties
+// artSchema.virtual("numberOfLikes").get(function () {
+//   // this -> art document
+//   return this.likes.length;
+// });
+
+//virtual populate
+artSchema.virtual("reviews", {
+  ref: "Review",
+  foreignField: "art", //referencing -> populate
+  localField: "_id" //referencing -> populate
+})
 
 artSchema.pre(/^find/, function (next) {
   //query middleware

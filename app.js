@@ -1,6 +1,7 @@
 const express = require("express");
 const artRouter = require("./routes/artRoutes");
 const authRouter = require("./routes/authRoute");
+const reviewRouter = require("./routes/reviewRoute");
 const rateLimit = require("express-rate-limit"); //for brute force attack
 const mongoSanitize = require('express-mongo-sanitize'); //for noSql query injections
 const xss = require('xss-clean') //for XSS attack (remove script tags)
@@ -22,5 +23,6 @@ app.use(xss())
 //routers
 app.use("/api/v1/arts", artRouter);
 app.use("/api/v1/auth", authRouter);
+
 
 module.exports = app;
