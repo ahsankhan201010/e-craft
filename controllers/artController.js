@@ -5,26 +5,28 @@ const { v4: uuid } = require("uuid");
 const { shapeArtData } = require("../utility/art");
 const { awsImageuploader } = require("../utility/AWS");
 
-const storage = multer.memoryStorage()
-exports.uploadArt = multer({ storage: storage }).any()
+const storage = multer.memoryStorage();
+exports.uploadArt = multer({ storage: storage }).any();
 
-exports.processArtImages = async (req,res,next) => {
+exports.processArtImages = async (req, res, next) => {
   try {
     var gallery = [];
     var files = req.files;
-    for(var file of files) { //bad for performance
+    var promises = files.map(async (file) => {
       var ext = file.mimetype.split("/")[1];
-      var filename = `art-${req.user._id}-${uuid()}-${Date.now()}.${ext}`
-      var {Location} = await awsImageuploader(file, filename)
-      gallery.push(Location)
-    }
-    req.body.gallery = gallery
-    next()
+      var filename = `art-${req.user._id}-${uuid()}-${Date.now()}.${ext}`;
+      var { Location } = await awsImageuploader(file, filename);
+      gallery.push(Location);
+      if (file.fieldname === "coverPhoto") req.body.coverPhoto = Location;
+    });
+    await Promise.all(promises);
+    req.body.gallery = gallery;
+    next();
   } catch (error) {
     console.log(error);
     res.status(404).json({ error: error.message });
   }
-}
+};
 // const storage = multer.diskStorage({
 //   destination: (req, file, cb) => {
 //     //cb(error, destination)
@@ -41,15 +43,13 @@ exports.processArtImages = async (req,res,next) => {
 
 exports.addArt = async (req, res) => {
   try {
-    // console.log(req.body)
-    // console.log(req.files)
-    // var artData = shapeArtData(req);
-    // var art = await Art.create(artData);
-    console.log(req.body.gallery)
+    //adding artist info
+    req.body.artist = req.user._id;
+    var art = await Art.create(req.body);
     res.status(200).json({
       status: "success",
       data: {
-        // art,
+        art,
       },
     });
   } catch (error) {

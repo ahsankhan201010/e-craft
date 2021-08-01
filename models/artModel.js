@@ -13,7 +13,8 @@ const artSchema = new mongoose.Schema(
     resolutionWidth: Number,
     resolutionHeight: Number,
     likes: Number, //52
-    gallery: Array, // ["anc.com", "xyz.com"]
+    gallery: Array, // ["anc.com", "xyz.com"] [1.jpg,2.jpg,3.jpg]
+    coverPhoto: String, //2.jpg
     orientation: String, //"landscape"
     subject: String, //"night vision"
     formats: Array, // ["jpg","psd","ai"]
@@ -22,6 +23,10 @@ const artSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    viewCount: {
+      type: Number,
+      default: 0
+    }
   },
   { toJSON: { virtuals: true }, toObject: { virtuals: true }, timestamps: true }
 );
