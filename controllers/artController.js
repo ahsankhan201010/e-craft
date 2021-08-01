@@ -2,7 +2,6 @@ const Art = require("../models/artModel");
 const APIFeatures = require("../utility/commonUntility");
 const multer = require("multer");
 const { v4: uuid } = require("uuid");
-const { shapeArtData } = require("../utility/art");
 const { awsImageuploader } = require("../utility/AWS");
 
 const storage = multer.memoryStorage();

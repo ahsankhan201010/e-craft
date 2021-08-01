@@ -22,9 +22,15 @@ const artistSchema = new mongoose.Schema({
   role: {
     type: String,
     default: "artist"
+  },
+  paypal: String,
+  address: {
+    country: String,
+    city: String,
+    street: String,
+    state: String,
+    zip: String
   }
-  //banking info
-  //address
 }, {
     timestamps: true
 });
