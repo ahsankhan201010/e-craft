@@ -15,15 +15,16 @@ const signJWT = (userId) => {
 const createAndSendToken = (user, res) => {
   var token = signJWT(user.userId);
   res.cookie("jwt", token, {
-    expires: new Date(Date.now() + parseInt(process.env.COOKIE_EXPIRES_IN) * 24 * 60 * 60 * 1000),
-    secure: process.env.NODE_ENV === "development" ? false : true,  //this will only valid for HTTPS connection
-    httpOnly: true //transfer only in http/https protocols
-  })
+    expires: new Date(
+      Date.now() + parseInt(process.env.COOKIE_EXPIRES_IN) * 24 * 60 * 60 * 1000
+    ),
+    secure: process.env.NODE_ENV === "development" ? false : true, //this will only valid for HTTPS connection
+    httpOnly: process.env.NODE_ENV === "development" ? false : true, //transfer only in http/https protocols
+  });
   res.status(200).json({
     status: "success",
-    token, //browser local || cookie
     data: {
-      user
+      user,
     },
   });
 };
@@ -49,16 +50,16 @@ exports.signup = async (req, res) => {
   try {
     //encryption
     var user = await User.create(req.body); //bson
-    //profile creation 
+    //profile creation
     var profile = {
       username: user.username,
       email: user.email,
-      userId: user._id
-    }
+      userId: user._id,
+    };
     var userProfile = null;
-    if(user.role === "artist") userProfile = await addArtist(profile)
-    if(user.role === "buyer") userProfile = await addBuyer(profile)
-    
+    if (user.role === "artist") userProfile = await addArtist(profile);
+    if (user.role === "buyer") userProfile = await addBuyer(profile);
+
     createAndSendToken(userProfile, res);
   } catch (error) {
     res.status(404).json({
@@ -94,8 +95,8 @@ exports.login = async (req, res) => {
     }
     var userProfile = null;
     //fetching profile
-    if(user.role === "artist") userProfile = await fetchArtist(user._id)
-    if(user.role === "buyer") userProfile = await fetchBuyer(user._id)
+    if (user.role === "artist") userProfile = await fetchArtist(user._id);
+    if (user.role === "buyer") userProfile = await fetchBuyer(user._id);
     createAndSendToken(userProfile, res);
   } catch (error) {
     res.status(404).json({
@@ -111,7 +112,7 @@ exports.protect = async (req, res, next) => {
     // 1- fetch token from request header
     if (
       req.headers.authorization &&
-      req.headers.authorization.startsWith("Bearer")
+      req.headers.authorization.startsWith("Bearer") // authorization: Bearer {token}
     ) {
       token = req.headers.authorization.split(" ")[1];
     }

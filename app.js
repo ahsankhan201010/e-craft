@@ -6,6 +6,7 @@ const buyerRouter = require("./routes/buyerRoute");
 const rateLimit = require("express-rate-limit"); //for brute force attack
 const mongoSanitize = require("express-mongo-sanitize"); //for noSql query injections
 const xss = require("xss-clean"); //for XSS attack (remove script tags)
+const cors = require('cors')
 
 const limiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1hr
@@ -15,6 +16,8 @@ const limiter = rateLimit({
 
 const app = express();
 
+//implementing cors
+app.use(cors({origin: true, credentials: true}))
 //serving static content
 app.use(express.static("public"));
 //middlewares
