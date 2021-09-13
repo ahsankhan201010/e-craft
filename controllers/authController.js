@@ -23,6 +23,7 @@ const createAndSendToken = (user, res) => {
   });
   res.status(200).json({
     status: "success",
+    token: process.env.NODE_ENV === "development" ? token : null,
     data: {
       user,
     },
