@@ -6,13 +6,14 @@ exports.generateCheckoutSession = async (req, res) => {
     var { artId } = req.params;
     //retrieve data and pass it to session obj
     var art = await Art.findById(artId);
-    var { title, description, cost, coverPhoto } = art;
+    var { title, description, cost, coverPhoto, artist: {_id : artistId} } = art;
     //generating stripe checkout session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       mode: "payment",
       metadata: {
         buyer: `${req.user._id}`,
+        artist: `${artistId}`,
         art: artId
       },
       line_items: [
@@ -24,7 +25,7 @@ exports.generateCheckoutSession = async (req, res) => {
                   images: [coverPhoto],
                   description
               },
-              unit_amount: cost
+              unit_amount: parseFloat(cost.toFixed(2) * 100) //we need to conve  to convert this into cents
           },
           quantity: 1,
         },

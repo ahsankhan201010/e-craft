@@ -16,6 +16,22 @@
     "xss-clean": "^0.1.1"
   },
   "scripts": {
-    "dev-start": "nodemon server.js"
-  }
+    "dev-start": "nodemon server.js",
+    "start": "node server.js"
+  },
+  "name": "ecraft",
+  "version": "1.0.0",
+  "main": "server.js",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ahsankhan201010/e-craft.git"
+  },
+  "author": "khan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ahsankhan201010/e-craft/issues"
+  },
+  "homepage": "https://github.com/ahsankhan201010/e-craft#readme",
+  "description": ""
 }
