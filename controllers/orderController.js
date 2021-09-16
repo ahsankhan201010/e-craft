@@ -52,7 +52,7 @@ exports.generateCheckoutSession = async (req, res) => {
   }
 };
 
-exports.stripeWebhook = (request, response) => {
+exports.stripeWebhook = async (request, response) => {
   try {
     const sig = request.headers["stripe-signature"];
 
