@@ -58,11 +58,9 @@ exports.stripeWebhook = (request,response) => {
     response.status(400).send(`Webhook Error: ${err.message}`);
   }
 
-  console.log(event)
-
-
   if(event.type === "checkout.session.completed") {
-    console.log("yeah! payment session completed successfully")
+    var {data: {object: { metadata }}} = event;
+    console.log(metadata)
   }
   // Handle the event
   // switch (event.type) {
