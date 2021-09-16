@@ -70,13 +70,16 @@ exports.stripeWebhook = async (request, response) => {
     }
 
     if (event.type === "checkout.session.completed") {
+      //generating order
       var {
         data: {
           object: { metadata },
         },
       } = event;
-      var order = await Order.create(metadata);
-      console.log(order);
+      await Order.create(metadata);
+      //changing art status to sold
+      await Art.findByIdAndUpdate(metadata.art, {status: "sold"})
+      //save event.data.object details to transaction collection
     }
 
     response.json({ received: true });
