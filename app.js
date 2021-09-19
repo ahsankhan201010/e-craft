@@ -4,6 +4,7 @@ const authRouter = require("./routes/authRoute");
 const artistRouter = require("./routes/artistRoute");
 const buyerRouter = require("./routes/buyerRoute");
 const orderRouter = require("./routes/orderRoute");
+const notificationRouter = require("./routes/notificationRoute");
 const rateLimit = require("express-rate-limit"); //for brute force attack
 const mongoSanitize = require("express-mongo-sanitize"); //for noSql query injections
 const xss = require("xss-clean"); //for XSS attack (remove script tags)
@@ -40,5 +41,6 @@ app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/artists", artistRouter);
 app.use("/api/v1/buyers", buyerRouter);
 app.use("/api/v1/orders", orderRouter);
+app.use("/api/v1/notifications", notificationRouter);
 
 module.exports = app;
