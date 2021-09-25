@@ -3,6 +3,6 @@ const { pushNotification } = require('../controllers/notificationController');
 
 const router = express.Router();
 
-router.post("/", pushNotification)
+// router.post("/", pushNotification)
 
 module.exports = router;

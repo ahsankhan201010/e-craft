@@ -242,3 +242,4 @@ exports.updatePassword = () => {
   //password
   //passwordConfirm
 };
+

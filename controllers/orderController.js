@@ -1,6 +1,7 @@
 const stripe = require("stripe")(process.env.STRIPE_SECRET);
 const Order = require("../models/orderModel");
 const Art = require("./../models/artModel");
+const { pushNotification } = require("./notificationController");
 exports.generateCheckoutSession = async (req, res) => {
   try {
     //fetch art
@@ -78,11 +79,13 @@ exports.stripeWebhook = async (request, response) => {
       } = event;
       await Order.create(metadata);
       //changing art status to sold
-      await Art.findByIdAndUpdate(metadata.art, {status: "sold"})
+      var art = await Art.findByIdAndUpdate(metadata.art, {status: "sold"})
       //save event.data.object details to transaction collection
     }
 
     response.json({ received: true });
+    //sending notification to artist
+    // pushNotification({user: art.artist, title: "you have a new order!"})
   } catch (error) {
     console.log(error);
   }
