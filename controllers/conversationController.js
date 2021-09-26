@@ -43,3 +43,19 @@ exports.fetchConversation = async (req, res) => {
     res.status(400).json(error);
   }
 };
+
+exports.fetchConversations = async (req,res) => {
+  try {
+    var conversations = await Conversation.find({members: req.user._id})
+    //messages
+    res.status(200).json({
+      status: "success",
+      data: {
+        conversations
+      }
+    })
+  } catch (error) {
+    console.log(error);
+    res.status(400).json(error);
+  }
+}

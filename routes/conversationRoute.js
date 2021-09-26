@@ -2,6 +2,7 @@ const express = require("express");
 const { protect } = require("../controllers/authController");
 const {
   fetchConversation,
+  fetchConversations,
 } = require("./../controllers/conversationController");
 
 const router = express.Router();
@@ -12,6 +13,7 @@ const router = express.Router();
 //     })
 // })
 
+router.get("/", protect, fetchConversations);
 router.get("/:orderId", protect, fetchConversation);
 
 module.exports = router;
